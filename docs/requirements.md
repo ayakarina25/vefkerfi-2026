@@ -125,6 +125,10 @@ Users must be able to select a game and view a details page or details panel con
 - PASS/FAIL: The user opens the site and sees a list of game cards.
 - PASS/FAIL: Each card displays title, platform, genre, release year, and rating.
 - PASS/FAIL: The total number of games is displayed above the list.
+ Browse the collection
+- PASS/FAIL: When the user opens the collection, the system displays one game card 
+  for each unique game_id.
+
 
 ### User story 2: Search by title
 - PASS/FAIL: The user types "Mario" in the search box and sees only games whose title contains "Mario".
@@ -146,3 +150,5 @@ Users must be able to select a game and view a details page or details panel con
 - PASS/FAIL: When a field is missing, the text "Not available" is displayed in its place.
 - PASS/FAIL: When an image path is invalid, a placeholder image is displayed instead of a broken icon.
 - PASS/FAIL: The page does not crash or show an error when data is missing.
+
+
