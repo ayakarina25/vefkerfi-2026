@@ -1,0 +1,15 @@
+{
+  "name": "vefkerfi-2026",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Game collection explorer for Assignment 7",
+  "main": "src/server.js",
+  "scripts": {
+    "setup-db": "node src/db/setup.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "sqlite3": "^5.1.7"
+  }
+}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Game Collection</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <main class="container">
+      <header class="page-header">
+        <p class="eyebrow">Retro game archive</p>
+        <h1>Game Collection</h1>
+        <p id="collection-count" class="collection-count">Loading collection...</p>
+      </header>
+
+      <p id="loading" class="status" role="status">Loading games...</p>
+      <p id="error" class="status status-error" role="alert" hidden>
+        Unable to load the game collection. Please try again later.
+      </p>
+      <section id="game-list" class="game-grid" aria-live="polite" aria-label="Game collection"></section>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
