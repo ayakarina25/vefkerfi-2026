@@ -3,13 +3,57 @@
 const collectionCount = document.querySelector('#collection-count');
 const loadingMessage = document.querySelector('#loading');
 const errorMessage = document.querySelector('#error');
+const searchInput = document.querySelector('#search-input');
+const noSearchResultsMessage = document.querySelector('#no-search-results');
+const noFilterResultsMessage = document.querySelector('#no-filter-results');
 const gameList = document.querySelector('#game-list');
+const filterElements = {
+  platform: document.querySelector('#platform-filter'),
+  genre: document.querySelector('#genre-filter'),
+  year: document.querySelector('#year-filter'),
+  developer: document.querySelector('#developer-filter'),
+  rating: document.querySelector('#rating-filter')
+};
+const missingValue = '__missing__';
+let allGames = [];
 
 function displayValue(value) {
   if (value === null || value === undefined || String(value).trim() === '') {
     return 'Not available';
   }
   return String(value);
+}
+
+function formatRating(value) {
+  const formattedValue = displayValue(value);
+  return formattedValue === 'Not available' ? formattedValue : `${formattedValue}%`;
+}
+
+function createImageDisplay(imagePath, altText) {
+  const imageContainer = document.createElement('div');
+  imageContainer.className = 'game-image image-placeholder';
+  imageContainer.setAttribute('role', 'img');
+  imageContainer.setAttribute('aria-label', 'No image available');
+  imageContainer.textContent = 'No image available';
+
+  if (displayValue(imagePath) === 'Not available') {
+    return imageContainer;
+  }
+
+  const image = document.createElement('img');
+  image.src = `/${String(imagePath).replace(/^\/+/, '')}`;
+  image.alt = altText;
+  image.setAttribute(
+    'onerror',
+    "this.onerror=null; this.parentElement.classList.add('image-placeholder'); this.parentElement.textContent='No image available';"
+  );
+  image.addEventListener('load', () => {
+    imageContainer.classList.remove('image-placeholder');
+    imageContainer.removeAttribute('role');
+    imageContainer.removeAttribute('aria-label');
+  });
+  imageContainer.replaceChildren(image);
+  return imageContainer;
 }
 
 function createGameCard(game) {
@@ -31,6 +75,8 @@ function createGameCard(game) {
     }
   });
 
+  card.appendChild(createImageDisplay(game.cover_image_path, `${displayValue(game.title)} cover`));
+
   const title = document.createElement('h2');
   title.textContent = displayValue(game.title);
   card.appendChild(title);
@@ -40,9 +86,7 @@ function createGameCard(game) {
     ['Platform', game.platform_name],
     ['Genre', game.genre_category],
     ['Year', game.release_year],
-    ['Rating', game.rating_score_pct === null || game.rating_score_pct === undefined
-      ? null
-      : `${game.rating_score_pct}%`]
+    ['Rating', formatRating(game.rating_score_pct)]
   ];
 
   for (const [label, value] of fields) {
@@ -57,6 +101,100 @@ function createGameCard(game) {
   return card;
 }
 
+function hasActiveFilters() {
+  return Object.values(filterElements).some((filter) => filter.value !== '');
+}
+
+function renderGames(games) {
+  gameList.replaceChildren(...games.map(createGameCard));
+  const searchIsActive = searchInput.value.trim() !== '';
+  const filtersAreActive = hasActiveFilters();
+  noSearchResultsMessage.hidden = games.length > 0 || !searchIsActive || filtersAreActive;
+  noFilterResultsMessage.hidden = games.length > 0 || !filtersAreActive;
+  collectionCount.textContent = `${games.length.toLocaleString()} games`;
+}
+
+function normalizedFilterValue(value) {
+  return value === missingValue ? null : value;
+}
+
+function matchesFilterValue(gameValue, selectedValue) {
+  if (selectedValue === '') {
+    return true;
+  }
+
+  const normalizedGameValue = gameValue === null || gameValue === undefined ||
+    String(gameValue).trim() === '' ? null : String(gameValue);
+  return normalizedGameValue === normalizedFilterValue(selectedValue);
+}
+
+function populateFilter(filter, values, label) {
+  const uniqueValues = [...new Set(values.map((value) => {
+    if (value === null || value === undefined || String(value).trim() === '') {
+      return missingValue;
+    }
+    return String(value);
+  }))];
+
+  uniqueValues.sort((first, second) => first.localeCompare(second, undefined, {
+    numeric: true,
+    sensitivity: 'base'
+  }));
+
+  const fragment = document.createDocumentFragment();
+  for (const value of uniqueValues) {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value === missingValue ? 'Not available' : value;
+    fragment.appendChild(option);
+  }
+  filter.appendChild(fragment);
+  filter.setAttribute('aria-label', label);
+}
+
+function populateFilters(games) {
+  populateFilter(filterElements.platform, games.map((game) => game.platform_name), 'Filter by platform');
+  populateFilter(filterElements.genre, games.map((game) => game.genre_category), 'Filter by genre');
+  populateFilter(filterElements.year, games.map((game) => game.release_year), 'Filter by release year');
+  populateFilter(filterElements.developer, games.map((game) => game.developer), 'Filter by developer');
+
+  const ratings = [...new Set(games
+    .map((game) => Number(game.rating_score_pct))
+    .filter((rating) => Number.isFinite(rating)))]
+    .sort((first, second) => first - second);
+  const ratingFragment = document.createDocumentFragment();
+  for (const rating of ratings) {
+    const option = document.createElement('option');
+    option.value = String(rating);
+    option.textContent = `${rating}% or higher`;
+    ratingFragment.appendChild(option);
+  }
+  filterElements.rating.appendChild(ratingFragment);
+}
+
+function filterGames() {
+  const searchText = searchInput.value;
+  const normalizedSearch = searchText.trim().toLocaleLowerCase();
+  const matchingGames = allGames.filter((game) => {
+    const titleMatches = normalizedSearch === '' || displayValue(game.title)
+      .toLocaleLowerCase()
+      .includes(normalizedSearch);
+    const platformMatches = matchesFilterValue(game.platform_name, filterElements.platform.value);
+    const genreMatches = matchesFilterValue(game.genre_category, filterElements.genre.value);
+    const yearMatches = matchesFilterValue(game.release_year, filterElements.year.value);
+    const developerMatches = matchesFilterValue(game.developer, filterElements.developer.value);
+    const ratingValue = Number(game.rating_score_pct);
+    const minimumRating = filterElements.rating.value;
+    const ratingMatches = minimumRating === '' ||
+      (Number.isFinite(ratingValue) && ratingValue >= Number(minimumRating));
+
+    return titleMatches && platformMatches && genreMatches && yearMatches &&
+      developerMatches && ratingMatches;
+  });
+
+  renderGames(matchingGames);
+}
+
 async function loadGames() {
   try {
     const response = await fetch('/api/games');
@@ -69,8 +207,9 @@ async function loadGames() {
       throw new Error('API response was not a game list');
     }
 
-    collectionCount.textContent = `${games.length.toLocaleString()} games`;
-    gameList.replaceChildren(...games.map(createGameCard));
+    allGames = games;
+    populateFilters(allGames);
+    renderGames(allGames);
     loadingMessage.hidden = true;
   } catch (error) {
     console.error('Could not load games:', error);
@@ -79,5 +218,13 @@ async function loadGames() {
     errorMessage.hidden = false;
   }
 }
+
+searchInput.addEventListener('input', (event) => {
+  filterGames();
+});
+
+Object.values(filterElements).forEach((filter) => {
+  filter.addEventListener('change', filterGames);
+});
 
 loadGames();

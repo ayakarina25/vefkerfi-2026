@@ -18,6 +18,48 @@
       <p id="error" class="status status-error" role="alert" hidden>
         Unable to load the game collection. Please try again later.
       </p>
+      <label class="search-label" for="search-input">Search by title</label>
+      <input
+        id="search-input"
+        class="search-input"
+        type="search"
+        placeholder="Search games by title"
+        autocomplete="off"
+      >
+      <div class="filter-grid" aria-label="Game filters">
+        <div class="filter-field">
+          <label for="platform-filter">Platform</label>
+          <select id="platform-filter">
+            <option value="">All platforms</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="genre-filter">Genre</label>
+          <select id="genre-filter">
+            <option value="">All genres</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="year-filter">Release year</label>
+          <select id="year-filter">
+            <option value="">All years</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="developer-filter">Developer</label>
+          <select id="developer-filter">
+            <option value="">All developers</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="rating-filter">Minimum rating</label>
+          <select id="rating-filter">
+            <option value="">Any rating</option>
+          </select>
+        </div>
+      </div>
+      <p id="no-search-results" class="status" role="status" hidden>No games match your search</p>
+      <p id="no-filter-results" class="status" role="status" hidden>No games match your filters</p>
       <section id="game-list" class="game-grid" aria-live="polite" aria-label="Game collection"></section>
     </main>
     <script src="/app.js" defer></script>

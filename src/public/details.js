@@ -16,6 +16,36 @@ function displayValue(value) {
   return String(value);
 }
 
+function formatRating(value) {
+  const formattedValue = displayValue(value);
+  return formattedValue === 'Not available' ? formattedValue : `${formattedValue}%`;
+}
+
+function displayImage(imagePath, altText) {
+  imageElement.className = 'game-image image-placeholder';
+  imageElement.setAttribute('role', 'img');
+  imageElement.setAttribute('aria-label', 'No image available');
+  imageElement.textContent = 'No image available';
+
+  if (displayValue(imagePath) === 'Not available') {
+    return;
+  }
+
+  const image = document.createElement('img');
+  image.src = `/${String(imagePath).replace(/^\/+/, '')}`;
+  image.alt = altText;
+  image.setAttribute(
+    'onerror',
+    "this.onerror=null; this.parentElement.classList.add('image-placeholder'); this.parentElement.textContent='No image available';"
+  );
+  image.addEventListener('load', () => {
+    imageElement.classList.remove('image-placeholder');
+    imageElement.removeAttribute('role');
+    imageElement.removeAttribute('aria-label');
+  });
+  imageElement.replaceChildren(image);
+}
+
 function addField(list, label, value) {
   const term = document.createElement('dt');
   term.textContent = label;
@@ -34,9 +64,7 @@ function displayGame(game) {
     ['Platform', game.platform_name],
     ['Developer', game.developer],
     ['Publisher', game.publisher],
-    ['Rating', game.rating_score_pct === null || game.rating_score_pct === undefined
-      ? null
-      : `${game.rating_score_pct}%`]
+    ['Rating', formatRating(game.rating_score_pct)]
   ].forEach(([label, value]) => addField(gameFields, label, value));
 
   [
@@ -45,10 +73,7 @@ function displayGame(game) {
     ['Title screen', game.titlescreen_path]
   ].forEach(([label, value]) => addField(imageFields, label, value));
 
-  if (displayValue(game.cover_image_path) !== 'Not available') {
-    imageElement.textContent = `Cover image: ${game.cover_image_path}`;
-    imageElement.setAttribute('aria-label', `Available cover image: ${game.cover_image_path}`);
-  }
+  displayImage(game.cover_image_path, `${displayValue(game.title)} cover`);
 
   detailsCard.hidden = false;
   loadingMessage.hidden = true;

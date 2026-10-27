@@ -43,6 +43,59 @@ h1 {
   color: #475569;
 }
 
+.search-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #334155;
+  font-weight: 700;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 32rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  color: #1e293b;
+  font: inherit;
+}
+
+.search-input:focus {
+  border-color: #2563eb;
+  outline: 3px solid rgb(37 99 235 / 20%);
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.filter-field select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  color: #1e293b;
+  background: #ffffff;
+  font: inherit;
+}
+
+.filter-field select:focus {
+  border-color: #2563eb;
+  outline: 3px solid rgb(37 99 235 / 20%);
+}
+
 .status {
   margin: 2rem 0;
   color: #475569;
@@ -66,6 +119,22 @@ h1 {
   background: #ffffff;
   box-shadow: 0 4px 12px rgb(15 23 42 / 6%);
   cursor: pointer;
+}
+
+.game-image {
+  display: grid;
+  min-height: 150px;
+  margin: -0.25rem -0.25rem 1rem;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.game-image img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
 }
 
 .game-card:focus {
@@ -121,6 +190,15 @@ h1 {
   color: #475569;
   background: #e2e8f0;
   text-align: center;
+}
+
+.details-card .game-image {
+  min-height: 220px;
+  margin: 0;
+}
+
+.details-card .game-image img {
+  height: 220px;
 }
 
 .description {

@@ -47,7 +47,8 @@ app.get('/api/games', async (request, response) => {
     const games = await all(
       database,
       `
-        SELECT game_id, title, platform_name, genre_category, release_year, rating_score_pct
+        SELECT game_id, title, platform_name, genre_category, release_year, rating_score_pct, developer,
+          cover_image_path
         FROM GAME
         ORDER BY rowid
       `
