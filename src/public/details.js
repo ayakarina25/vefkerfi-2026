@@ -8,6 +8,12 @@ const descriptionElement = document.querySelector('#game-description');
 const gameFields = document.querySelector('#game-fields');
 const imageFields = document.querySelector('#image-fields');
 const imageElement = document.querySelector('#game-image');
+const placeholderImage = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">' +
+  '<rect width="640" height="360" fill="#e2e8f0"/>' +
+  '<text x="320" y="185" text-anchor="middle" fill="#475569" font-family="Arial" font-size="28">No image available</text>' +
+  '</svg>'
+)}`;
 
 function displayValue(value) {
   if (value === null || value === undefined || String(value).trim() === '') {
@@ -23,25 +29,15 @@ function formatRating(value) {
 
 function displayImage(imagePath, altText) {
   imageElement.className = 'game-image image-placeholder';
-  imageElement.setAttribute('role', 'img');
-  imageElement.setAttribute('aria-label', 'No image available');
-  imageElement.textContent = 'No image available';
-
-  if (displayValue(imagePath) === 'Not available') {
-    return;
-  }
-
   const image = document.createElement('img');
-  image.src = `/${String(imagePath).replace(/^\/+/, '')}`;
-  image.alt = altText;
-  image.setAttribute(
-    'onerror',
-    "this.onerror=null; this.parentElement.classList.add('image-placeholder'); this.parentElement.textContent='No image available';"
-  );
+  const hasImage = displayValue(imagePath) !== 'Not available';
+  image.src = hasImage ? `/${String(imagePath).replace(/^\/+/, '')}` : placeholderImage;
+  image.alt = hasImage ? altText : 'No image available';
+  image.setAttribute('onerror', `this.onerror=null; this.src='${placeholderImage}'; this.alt='No image available'; this.parentElement.classList.add('image-placeholder');`);
   image.addEventListener('load', () => {
-    imageElement.classList.remove('image-placeholder');
-    imageElement.removeAttribute('role');
-    imageElement.removeAttribute('aria-label');
+    if (image.src !== placeholderImage) {
+      imageElement.classList.remove('image-placeholder');
+    }
   });
   imageElement.replaceChildren(image);
 }

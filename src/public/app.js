@@ -7,6 +7,7 @@ const searchInput = document.querySelector('#search-input');
 const noSearchResultsMessage = document.querySelector('#no-search-results');
 const noFilterResultsMessage = document.querySelector('#no-filter-results');
 const gameList = document.querySelector('#game-list');
+const clearFiltersButton = document.querySelector('#clear-filters');
 const filterElements = {
   platform: document.querySelector('#platform-filter'),
   genre: document.querySelector('#genre-filter'),
@@ -16,6 +17,12 @@ const filterElements = {
 };
 const missingValue = '__missing__';
 let allGames = [];
+const placeholderImage = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">' +
+  '<rect width="640" height="360" fill="#e2e8f0"/>' +
+  '<text x="320" y="185" text-anchor="middle" fill="#475569" font-family="Arial" font-size="28">No image available</text>' +
+  '</svg>'
+)}`;
 
 function displayValue(value) {
   if (value === null || value === undefined || String(value).trim() === '') {
@@ -32,25 +39,15 @@ function formatRating(value) {
 function createImageDisplay(imagePath, altText) {
   const imageContainer = document.createElement('div');
   imageContainer.className = 'game-image image-placeholder';
-  imageContainer.setAttribute('role', 'img');
-  imageContainer.setAttribute('aria-label', 'No image available');
-  imageContainer.textContent = 'No image available';
-
-  if (displayValue(imagePath) === 'Not available') {
-    return imageContainer;
-  }
-
   const image = document.createElement('img');
-  image.src = `/${String(imagePath).replace(/^\/+/, '')}`;
-  image.alt = altText;
-  image.setAttribute(
-    'onerror',
-    "this.onerror=null; this.parentElement.classList.add('image-placeholder'); this.parentElement.textContent='No image available';"
-  );
+  const hasImage = displayValue(imagePath) !== 'Not available';
+  image.src = hasImage ? `/${String(imagePath).replace(/^\/+/, '')}` : placeholderImage;
+  image.alt = hasImage ? altText : 'No image available';
+  image.setAttribute('onerror', `this.onerror=null; this.src='${placeholderImage}'; this.alt='No image available'; this.parentElement.classList.add('image-placeholder');`);
   image.addEventListener('load', () => {
-    imageContainer.classList.remove('image-placeholder');
-    imageContainer.removeAttribute('role');
-    imageContainer.removeAttribute('aria-label');
+    if (image.src !== placeholderImage) {
+      imageContainer.classList.remove('image-placeholder');
+    }
   });
   imageContainer.replaceChildren(image);
   return imageContainer;
@@ -172,6 +169,15 @@ function populateFilters(games) {
   filterElements.rating.appendChild(ratingFragment);
 }
 
+function clearFilters() {
+  searchInput.value = '';
+  Object.values(filterElements).forEach((filter) => {
+    filter.value = '';
+  });
+  filterGames();
+  searchInput.focus();
+}
+
 function filterGames() {
   const searchText = searchInput.value;
   const normalizedSearch = searchText.trim().toLocaleLowerCase();
@@ -226,5 +232,7 @@ searchInput.addEventListener('input', (event) => {
 Object.values(filterElements).forEach((filter) => {
   filter.addEventListener('change', filterGames);
 });
+
+clearFiltersButton.addEventListener('click', clearFilters);
 
 loadGames();

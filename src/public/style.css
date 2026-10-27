@@ -96,6 +96,31 @@ h1 {
   outline: 3px solid rgb(37 99 235 / 20%);
 }
 
+.clear-filters {
+  align-self: end;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #2563eb;
+  border-radius: 0.5rem;
+  color: #1d4ed8;
+  background: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clear-filters:focus,
+.back-link:focus {
+  border-radius: 0.25rem;
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.clear-filters:hover {
+  color: #ffffff;
+  background: #2563eb;
+}
+
 .status {
   margin: 2rem 0;
   color: #475569;
