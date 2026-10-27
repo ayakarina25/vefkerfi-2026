@@ -59,7 +59,14 @@ function uniqueGames(data) {
       platform_name: game.platform_name,
       genre_category: game.genre_category,
       release_year: game.release_year,
-      rating_score_pct: game.rating_score_pct
+      rating_score_pct: game.rating_score_pct,
+      description: game.description,
+      release_date: game.release_date,
+      developer: game.developer,
+      publisher: game.publisher,
+      cover_image_path: game.cover_image_path,
+      screenshot_path: game.screenshot_path,
+      titlescreen_path: game.titlescreen_path
     });
   }
 
@@ -105,7 +112,14 @@ async function setupDatabase() {
         platform_name TEXT,
         genre_category TEXT,
         release_year INTEGER,
-        rating_score_pct INTEGER
+        rating_score_pct INTEGER,
+        description TEXT,
+        release_date TEXT,
+        developer TEXT,
+        publisher TEXT,
+        cover_image_path TEXT,
+        screenshot_path TEXT,
+        titlescreen_path TEXT
       )
     `);
     await run(database, 'BEGIN TRANSACTION');
@@ -120,8 +134,15 @@ async function setupDatabase() {
             platform_name,
             genre_category,
             release_year,
-            rating_score_pct
-          ) VALUES (?, ?, ?, ?, ?, ?)
+            rating_score_pct,
+            description,
+            release_date,
+            developer,
+            publisher,
+            cover_image_path,
+            screenshot_path,
+            titlescreen_path
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           game.game_id,
@@ -129,7 +150,14 @@ async function setupDatabase() {
           game.platform_name ?? null,
           game.genre_category ?? null,
           game.release_year ?? null,
-          game.rating_score_pct ?? null
+          game.rating_score_pct ?? null,
+          game.description ?? null,
+          game.release_date ?? null,
+          game.developer ?? null,
+          game.publisher ?? null,
+          game.cover_image_path ?? null,
+          game.screenshot_path ?? null,
+          game.titlescreen_path ?? null
         ]
       );
     }

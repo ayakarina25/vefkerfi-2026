@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Game Details</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <main class="container">
+      <a class="back-link" href="/">Back to collection</a>
+      <p class="eyebrow">Game details</p>
+      <p id="loading" class="status" role="status">Loading game details...</p>
+      <p id="error" class="status status-error" role="alert" hidden>
+        Unable to load this game. Please return to the collection and try again.
+      </p>
+
+      <article id="game-details" class="details-card" hidden>
+        <div id="game-image" class="image-placeholder" role="img" aria-label="No image available">
+          No image available
+        </div>
+        <div>
+          <h1 id="game-title"></h1>
+          <p id="game-description" class="description"></p>
+          <dl id="game-fields" class="details-list"></dl>
+          <section class="image-information" aria-labelledby="image-information-title">
+            <h2 id="image-information-title">Available image information</h2>
+            <dl id="image-fields" class="details-list"></dl>
+          </section>
+        </div>
+      </article>
+    </main>
+    <script src="/details.js" defer></script>
+  </body>
+</html>

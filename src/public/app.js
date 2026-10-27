@@ -15,6 +15,21 @@ function displayValue(value) {
 function createGameCard(game) {
   const card = document.createElement('article');
   card.className = 'game-card';
+  card.tabIndex = 0;
+  card.setAttribute('role', 'link');
+  card.setAttribute('aria-label', `View details for ${displayValue(game.title)}`);
+
+  function openDetails() {
+    window.location.href = `details.html?id=${encodeURIComponent(game.game_id)}`;
+  }
+
+  card.addEventListener('click', openDetails);
+  card.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openDetails();
+    }
+  });
 
   const title = document.createElement('h2');
   title.textContent = displayValue(game.title);

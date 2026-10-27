@@ -65,6 +65,12 @@ h1 {
   border-radius: 0.75rem;
   background: #ffffff;
   box-shadow: 0 4px 12px rgb(15 23 42 / 6%);
+  cursor: pointer;
+}
+
+.game-card:focus {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
 }
 
 .game-card h2 {
@@ -87,4 +93,66 @@ h1 {
 
 .game-card dd {
   margin: 0;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 2rem;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.details-card {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 6%);
+}
+
+.image-placeholder {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  padding: 1rem;
+  color: #475569;
+  background: #e2e8f0;
+  text-align: center;
+}
+
+.description {
+  color: #475569;
+}
+
+.details-list {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.5fr) 1fr;
+  gap: 0.5rem 1rem;
+}
+
+.details-list dt {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.details-list dd {
+  margin: 0;
+}
+
+.image-information {
+  margin-top: 2rem;
+}
+
+.image-information h2 {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 640px) {
+  .details-card {
+    grid-template-columns: 1fr;
+    padding: 1.25rem;
+  }
 }
