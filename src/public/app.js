@@ -170,12 +170,10 @@ function populateFilters(games) {
 }
 
 function clearFilters() {
-  searchInput.value = '';
   Object.values(filterElements).forEach((filter) => {
     filter.value = '';
   });
   filterGames();
-  searchInput.focus();
 }
 
 function filterGames() {
